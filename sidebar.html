@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ContraPunto Sidebar</title>
+    <link rel="stylesheet" href="sidebar.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3F51B5;
+            --primary-light: #C5CAE9;
+            --accent: #FF4081;
+            --accent-secondary: #7C4DFF;
+            --background: #F5F7FA;
+            --card-bg: #FFFFFF;
+            --text-primary: #212121;
+            --text-secondary: #757575;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar-container">
+        <div class="sidebar-header">
+            <div class="logo-container">
+                <svg width="24" height="24" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"
+                    style="margin-right: 8px;">
+                    <path
+                        d="M85 30C85 41.0457 76.0457 50 65 50C53.9543 50 45 41.0457 45 30C45 18.9543 53.9543 10 65 10C76.0457 10 85 18.9543 85 30Z"
+                        fill="#3F51B5"></path>
+                    <path
+                        d="M75 90C75 101.046 66.0457 110 55 110C43.9543 110 35 101.046 35 90C35 78.9543 43.9543 70 55 70C66.0457 70 75 78.9543 75 90Z"
+                        fill="#FF4081"></path>
+                    <path
+                        d="M55 50C66.0457 50 75 58.9543 75 70C75 81.0457 66.0457 90 55 90C43.9543 90 35 81.0457 35 70C35 58.9543 43.9543 50 55 50Z"
+                        fill="#7C4DFF"></path>
+                    <path
+                        d="M65 70C76.0457 70 85 78.9543 85 90C85 101.046 76.0457 110 65 110C53.9543 110 45 101.046 45 90C45 78.9543 53.9543 70 65 70Z"
+                        fill="#3F51B5" fill-opacity="0.7"></path>
+                    <path
+                        d="M55 10C66.0457 10 75 18.9543 75 30C75 41.0457 66.0457 50 55 50C43.9543 50 35 41.0457 35 30C35 18.9543 43.9543 10 55 10Z"
+                        fill="#FF4081" fill-opacity="0.7"></path>
+                </svg>
+                <span class="logo">Contra<span class="logo-accent">Punto</span></span>
+            </div>
+            <!-- <button class="settings-button" title="Configuración">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="3" />
+                    <path
+                        d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 8 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 5 15.4a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 5 8.6a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09c0 .66.38 1.26 1 1.51a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.66 0 1.26.38 1.51 1H21a2 2 0 0 1 0 4h-.09c-.25 0-.48.09-.68.26z" />
+                </svg>
+            </button> -->
+        </div>
+        <div id="loading-indicator" class="loading-indicator" style="display:none; height: 100vh;">
+            <div class="spinner"></div>
+            <p>Analizando la noticia...</p>
+        </div>
+        <div id="sidebar-content" class="sidebar-content"
+            style="display:flex;align-items:center;justify-content:center;height:100%;">
+            <button id="analyze-btn"
+                style="padding:24px 32px;font-size:18px;font-weight:600;background:var(--primary);color:#fff;border:none;border-radius:8px;box-shadow:0 2px 8px rgba(99,102,241,0.08);cursor:pointer;transition:background 0.2s;">
+                Analizar artículo
+            </button>
+        </div>
+        <div class="sidebar-footer">
+            ContraPunto © 2023 | Extensión para Chrome v1.0.2
+        </div>
+    </div>
+    <script src="sidebar.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Políticas de Privacidad - ContraPunto</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #3F51B5;
+      --primary-dark: #303F9F;
+      --primary-light: #C5CAE9;
+      --accent: #FF4081;
+      --accent-secondary: #7C4DFF;
+      --text-primary: #212121;
+      --text-secondary: #757575;
+      --text-light: #9E9E9E;
+      --divider: #E0E0E0;
+      --background: #FAFAFA;
+      --card-bg: #FFFFFF;
+      --success: #4CAF50;
+      --warning: #FF9800;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--background);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 24px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-left: 12px;
+    }
+
+    .logo-accent {
+      color: var(--accent);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+    }
+
+    .nav-link {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: opacity 0.2s;
+    }
+
+    .nav-link:hover {
+      opacity: 0.8;
+    }
+
+    .main-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 48px 24px;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .page-title {
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 16px;
+      letter-spacing: -1px;
+    }
+
+    .page-subtitle {
+      font-size: 20px;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .last-updated {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 32px;
+      border-left: 4px solid var(--accent);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .last-updated-label {
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .last-updated-date {
+      color: var(--text-secondary);
+    }
+
+    .table-of-contents {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 48px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .toc-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+    }
+
+    .toc-icon {
+      margin-right: 12px;
+    }
+
+    .toc-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 12px;
+    }
+
+    .toc-item {
+      padding: 12px 16px;
+      border-radius: 8px;
+      transition: background-color 0.2s;
+    }
+
+    .toc-item:hover {
+      background-color: var(--primary-light);
+    }
+
+    .toc-link {
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+    }
+
+    .toc-number {
+      background: var(--primary);
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      margin-right: 12px;
+    }
+
+    .content-section {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 40px;
+      margin-bottom: 32px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .section-title {
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+    }
+
+    .section-icon {
+      margin-right: 16px;
+    }
+
+    .section-content h3 {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 32px 0 16px 0;
+    }
+
+    .section-content h3:first-child {
+      margin-top: 0;
+    }
+
+    .section-content p {
+      margin-bottom: 16px;
+      color: var(--text-primary);
+      font-size: 16px;
+    }
+
+    .section-content ul {
+      margin: 16px 0;
+      padding-left: 24px;
+    }
+
+    .section-content li {
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+
+    .highlight-box {
+      background: linear-gradient(135deg, #E3F2FD 0%, #F3E5F5 100%);
+      border-radius: 12px;
+      padding: 24px;
+      margin: 24px 0;
+      border-left: 4px solid var(--accent);
+    }
+
+    .highlight-title {
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+    }
+
+    .highlight-icon {
+      margin-right: 8px;
+    }
+
+    .contact-section {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent-secondary) 100%);
+      color: white;
+      border-radius: 16px;
+      padding: 48px;
+      text-align: center;
+      margin-top: 48px;
+    }
+
+    .contact-title {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .contact-text {
+      font-size: 18px;
+      margin-bottom: 32px;
+      opacity: 0.9;
+    }
+
+    .contact-info {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      font-weight: 500;
+    }
+
+    .contact-icon {
+      margin-right: 12px;
+    }
+
+    .footer {
+      background: var(--text-primary);
+      color: white;
+      text-align: center;
+      padding: 32px 24px;
+      margin-top: 64px;
+    }
+
+    .footer-text {
+      opacity: 0.8;
+    }
+
+    .scroll-to-top {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      background: var(--primary);
+      color: white;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .scroll-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .scroll-to-top:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+      .header-container {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .nav-links {
+        gap: 16px;
+      }
+
+      .page-title {
+        font-size: 36px;
+      }
+
+      .toc-list {
+        grid-template-columns: 1fr;
+      }
+
+      .content-section {
+        padding: 24px;
+      }
+
+      .section-title {
+        font-size: 24px;
+      }
+
+      .contact-info {
+        flex-direction: column;
+        gap: 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-container">
+      <div class="logo-container">
+        <svg width="32" height="32" viewBox="0 0 120 120" fill="none" aria-label="Logo ContraPunto">
+          <path
+            d="M85 30C85 41.0457 76.0457 50 65 50C53.9543 50 45 41.0457 45 30C45 18.9543 53.9543 10 65 10C76.0457 10 85 18.9543 85 30Z"
+            fill="white" />
+          <path
+            d="M75 90C75 101.046 66.0457 110 55 110C43.9543 110 35 101.046 35 90C35 78.9543 43.9543 70 55 70C66.0457 70 75 78.9543 75 90Z"
+            fill="#FF4081" />
+          <path
+            d="M55 50C66.0457 50 75 58.9543 75 70C75 81.0457 66.0457 90 55 90C43.9543 90 35 81.0457 35 70C35 58.9543 43.9543 50 55 50Z"
+            fill="#7C4DFF" />
+          <path
+            d="M65 70C76.0457 70 85 78.9543 85 90C85 101.046 76.0457 110 65 110C53.9543 110 45 101.046 45 90C45 78.9543 53.9543 70 65 70Z"
+            fill="white" fill-opacity="0.7" />
+          <path
+            d="M55 10C66.0457 10 75 18.9543 75 30C75 41.0457 66.0457 50 55 50C43.9543 50 35 41.0457 35 30C35 18.9543 43.9543 10 55 10Z"
+            fill="#FF4081" fill-opacity="0.7" />
+        </svg>
+        <h1 class="logo">Contra<span class="logo-accent">Punto</span></h1>
+      </div>
+      <nav class="nav-links">
+        <a href="#introduccion" class="nav-link">Inicio</a>
+        <a href="#uso-informacion" class="nav-link">Análisis</a>
+        <a href="#" class="nav-link">Sobre nosotros</a>
+        <a href="#contacto" class="nav-link">Contacto</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-container">
+    <!-- Page Header -->
+    <div class="page-header">
+      <h1 class="page-title">Políticas de Privacidad</h1>
+      <p class="page-subtitle">
+        Transparencia total sobre cómo recopilamos, utilizamos y protegemos tu información personal en
+        ContraPunto
+      </p>
+    </div>
+
+    <!-- Last Updated -->
+    <div class="last-updated">
+      <div class="last-updated-label">Última actualización:</div>
+      <div class="last-updated-date">1 de julio de 2025</div>
+    </div>
+
+    <!-- Table of Contents -->
+    <div class="table-of-contents">
+      <h2 class="toc-title">
+        <svg class="toc-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </svg>
+        Índice de contenidos
+      </h2>
+      <ul class="toc-list">
+        <li class="toc-item">
+          <a href="#introduccion" class="toc-link">
+            <span class="toc-number">1</span>
+            Introducción
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="#informacion-recopilada" class="toc-link">
+            <span class="toc-number">2</span>
+            Información que recopilamos
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="#uso-informacion" class="toc-link">
+            <span class="toc-number">3</span>
+            Cómo usamos tu información
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="#compartir-informacion" class="toc-link">
+            <span class="toc-number">4</span>
+            Compartir información
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="#seguridad" class="toc-link">
+            <span class="toc-number">5</span>
+            Seguridad de datos
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="#derechos" class="toc-link">
+            <span class="toc-number">6</span>
+            Tus derechos
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="#cookies" class="toc-link">
+            <span class="toc-number">7</span>
+            Cookies y tecnologías
+          </a>
+        </li>
+        <li class="toc-item">
+          <a href="#cambios" class="toc-link">
+            <span class="toc-number">8</span>
+            Cambios en la política
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Content Sections -->
+    <section id="introduccion" class="content-section">
+      <h2 class="section-title">
+        <svg class="section-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        1. Introducción
+      </h2>
+      <div class="section-content">
+        <p>
+          En ContraPunto, nos comprometemos a proteger tu privacidad y a ser transparentes sobre cómo
+          recopilamos, utilizamos y protegemos tu información personal. Esta Política de Privacidad describe
+          nuestras prácticas de datos cuando utilizas nuestro servicio de análisis de noticias con
+          inteligencia artificial.
+        </p>
+        <p>
+          Al utilizar ContraPunto, aceptas las prácticas descritas en esta política. Si no estás de acuerdo
+          con algún aspecto de esta política, te recomendamos que no utilices nuestros servicios.
+        </p>
+
+        <div class="highlight-box">
+          <div class="highlight-title">
+            <svg class="highlight-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <path
+                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z">
+              </path>
+            </svg>
+            Nuestro compromiso
+          </div>
+          <p>
+            ContraPunto está diseñado con la privacidad en mente. Minimizamos la recopilación de datos
+            personales y utilizamos técnicas de anonimización para proteger tu identidad mientras mejoramos
+            nuestro servicio de análisis de noticias.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="informacion-recopilada" class="content-section">
+      <h2 class="section-title">
+        <svg class="section-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <path
+            d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+          </path>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+          <line x1="12" y1="22.08" x2="12" y2="12"></line>
+        </svg>
+        2. Información que recopilamos
+      </h2>
+      <div class="section-content">
+        <h3>Información que proporcionas directamente</h3>
+        <ul>
+          <li><strong>Información de cuenta:</strong> Dirección de correo electrónico, nombre de usuario y
+            contraseña cuando creas una cuenta</li>
+          <li><strong>Preferencias de análisis:</strong> Configuraciones personalizadas para el análisis de
+            noticias</li>
+          <li><strong>Feedback:</strong> Comentarios y evaluaciones que proporcionas sobre nuestros análisis
+          </li>
+          <li><strong>Comunicaciones:</strong> Mensajes que nos envías a través de formularios de contacto o
+            soporte</li>
+        </ul>
+
+        <h3>Información recopilada automáticamente</h3>
+        <ul>
+          <li><strong>Datos de uso:</strong> URLs de noticias analizadas, tiempo de análisis, frecuencia de
+            uso</li>
+          <li><strong>Información técnica:</strong> Dirección IP, tipo de navegador, sistema operativo,
+            identificadores de dispositivo</li>
+          <li><strong>Datos de rendimiento:</strong> Métricas sobre el funcionamiento de nuestro servicio</li>
+          <li><strong>Cookies y tecnologías similares:</strong> Para mejorar la funcionalidad y
+            personalización</li>
+        </ul>
+
+        <h3>Información de terceros</h3>
+        <p>
+          Cuando utilizas ContraPunto como extensión de navegador o integración, podemos recibir información
+          limitada sobre las páginas web que visitas, exclusivamente para proporcionar análisis de noticias.
+          Esta información se procesa de forma anónima y no se almacena de manera identificable.
+        </p>
+      </div>
+    </section>
+
+    <section id="uso-informacion" class="content-section">
+      <h2 class="section-title">
+        <svg class="section-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <path d="M2 12h6"></path>
+          <path d="M22 12h-6"></path>
+          <path d="M12 2v2"></path>
+          <path d="M12 8v2"></path>
+          <path d="M12 14v2"></path>
+          <path d="M12 20v2"></path>
+          <circle cx="12" cy="12" r="10"></circle>
+        </svg>
+        3. Cómo usamos tu información
+      </h2>
+      <div class="section-content">
+        <h3>Propósitos principales</h3>
+        <ul>
+          <li><strong>Proporcionar el servicio:</strong> Analizar noticias, detectar sesgos y generar informes
+            personalizados</li>
+          <li><strong>Mejorar la precisión:</strong> Entrenar y perfeccionar nuestros algoritmos de
+            inteligencia artificial</li>
+          <li><strong>Personalización:</strong> Adaptar el análisis a tus preferencias e intereses</li>
+          <li><strong>Comunicación:</strong> Enviarte actualizaciones importantes sobre el servicio</li>
+        </ul>
+
+        <h3>Propósitos secundarios</h3>
+        <ul>
+          <li><strong>Investigación y desarrollo:</strong> Desarrollar nuevas funcionalidades y mejorar las
+            existentes</li>
+          <li><strong>Seguridad:</strong> Detectar y prevenir fraudes, abusos o actividades maliciosas</li>
+          <li><strong>Cumplimiento legal:</strong> Cumplir con obligaciones legales y regulatorias</li>
+          <li><strong>Análisis estadístico:</strong> Generar estadísticas agregadas y anónimas sobre el uso
+            del servicio</li>
+        </ul>
+
+        <div class="highlight-box">
+          <div class="highlight-title">
+            <svg class="highlight-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            Principio de minimización
+          </div>
+          <p>
+            Solo utilizamos tu información para los propósitos específicos descritos en esta política. No
+            vendemos, alquilamos ni compartimos tu información personal con terceros para fines comerciales.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="compartir-informacion" class="content-section">
+      <h2 class="section-title">
+        <svg class="section-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <path d="M17 6l5 5-5 5"></path>
+          <path d="M3 11h16"></path>
+        </svg>
+        4. Compartir información
+      </h2>
+      <div class="section-content">
+        <h3>Cuándo compartimos información</h3>
+        <p>ContraPunto puede compartir tu información personal solo en las siguientes circunstancias limitadas:
+        </p>
+
+        <ul>
+          <li><strong>Proveedores de servicios:</strong> Con empresas que nos ayudan a operar nuestro servicio
+            (hosting, análisis, soporte técnico)</li>
+          <li><strong>Cumplimiento legal:</strong> Cuando sea requerido por ley, orden judicial o proceso
+            legal válido</li>
+          <li><strong>Protección de derechos:</strong> Para proteger nuestros derechos, propiedad o seguridad,
+            o los de nuestros usuarios</li>
+          <li><strong>Transacciones comerciales:</strong> En caso de fusión, adquisición o venta de activos
+            (con notificación previa)</li>
+        </ul>
+
+        <h3>Información agregada y anónima</h3>
+        <p>
+          Podemos compartir información estadística agregada y anónima sobre el uso de nuestro servicio con
+          socios, investigadores o el público en general. Esta información no puede utilizarse para
+          identificarte personalmente.
+        </p>
+
+        <h3>Transferencias internacionales</h3>
+        <p>
+          Tu información puede ser transferida y procesada en países fuera de tu jurisdicción. Implementamos
+          salvaguardas apropiadas para proteger tu información durante estas transferencias, incluyendo
+          cláusulas contractuales estándar y certificaciones de privacidad.
+        </p>
+      </div>
+    </section>
+
+    <section id="seguridad" class="content-section">
+      <h2 class="section-title">
+        <svg class="section-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+        </svg>
+        5. Seguridad de datos
+      </h2>
+      <div class="section-content">
+        <h3>Medidas de seguridad técnicas</h3>
+        <ul>
+          <li><strong>Cifrado:</strong> Utilizamos cifrado TLS/SSL para proteger datos en tránsito</li>
+          <li><strong>Cifrado en reposo:</strong> Los datos almacenados están cifrados usando estándares
+            industriales</li>
+          <li><strong>Autenticación:</strong> Implementamos autenticación multifactor y contraseñas seguras
+          </li>
+          <li><strong>Monitoreo:</strong> Supervisión continua de sistemas para detectar actividades
+            sospechosas</li>
+        </ul>
+
+        <h3>Medidas organizacionales</h3>
+        <ul>
+          <li><strong>Acceso limitado:</strong> Solo el personal autorizado tiene acceso a datos personales
+          </li>
+          <li><strong>Capacitación:</strong> Formación regular del personal en prácticas de privacidad y
+            seguridad</li>
+          <li><strong>Auditorías:</strong> Revisiones periódicas de nuestras prácticas de seguridad</li>
+          <li><strong>Respuesta a incidentes:</strong> Procedimientos establecidos para responder a brechas de
+            seguridad</li>
+        </ul>
+
+        <div class="highlight-box">
+          <div class="highlight-title">
+            <svg class="highlight-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <path d="M12 1l3 6 6 3-6 3-3 6-3-6-6-3 6-3z"></path>
+            </svg>
+            Compromiso con la seguridad
+          </div>
+          <p>
+            Aunque implementamos medidas de seguridad robustas, ningún sistema es 100% seguro. Te
+            notificaremos inmediatamente si detectamos cualquier brecha que pueda afectar tu información
+            personal.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="derechos" class="content-section">
+      <h2 class="section-title">
+        <svg class="section-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="8.5" cy="7" r="4"></circle>
+          <line x1="20" y1="8" x2="20" y2="14"></line>
+          <line x1="23" y1="11" x2="17" y2="11"></line>
+        </svg>
+        6. Tus derechos
+      </h2>
+      <div class="section-content">
+        <h3>Derechos fundamentales</h3>
+        <p>Dependiendo de tu ubicación, puedes tener los siguientes derechos respecto a tu información personal:
+        </p>
+
+        <ul>
+          <li><strong>Acceso:</strong> Solicitar una copia de la información personal que tenemos sobre ti
+          </li>
+          <li><strong>Rectificación:</strong> Corregir información inexacta o incompleta</li>
+          <li><strong>Eliminación:</strong> Solicitar la eliminación de tu información personal ("derecho al
+            olvido")</li>
+          <li><strong>Portabilidad:</strong> Recibir tu información en un formato estructurado y legible por
+            máquina</li>
+          <li><strong>Restricción:</strong> Limitar el procesamiento de tu información en ciertas
+            circunstancias</li>
+          <li><strong>Oposición:</strong> Oponerte al procesamiento de tu información para ciertos propósitos
+          </li>
+        </ul>
+
+        <h3>Cómo ejercer tus derechos</h3>
+        <p>
+          Para ejercer cualquiera de estos derechos, puedes contactarnos a través de los medios proporcionados
+          en la sección de contacto. Responderemos a tu solicitud dentro de 30 días y verificaremos tu
+          identidad antes de procesar cualquier solicitud.
+        </p>
+
+        <h3>Retención de datos</h3>
+        <p>
+          Conservamos tu información personal solo durante el tiempo necesario para cumplir con los propósitos
+          descritos en esta política, a menos que la ley requiera o permita un período de retención más largo.
+        </p>
+      </div>
+    </section>
+
+    <section id="cookies" class="content-section">
+      <h2 class="section-title">
+        <svg class="section-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+          <path d="M21 5c0 1.66-4 3-9 3S3 6.66 3 5"></path>
+          <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+        </svg>
+        7. Cookies y tecnologías similares
+      </h2>
+      <div class="section-content">
+        <h3>Tipos de cookies que utilizamos</h3>
+        <ul>
+          <li><strong>Cookies esenciales:</strong> Necesarias para el funcionamiento básico del sitio web</li>
+          <li><strong>Cookies de rendimiento:</strong> Nos ayudan a entender cómo los usuarios interactúan con
+            nuestro servicio</li>
+          <li><strong>Cookies de funcionalidad:</strong> Permiten recordar tus preferencias y configuraciones
+          </li>
+          <li><strong>Cookies de análisis:</strong> Utilizadas para mejorar nuestro servicio mediante análisis
+            de uso</li>
+        </ul>
+
+        <h3>Control de cookies</h3>
+        <p>
+          Puedes controlar y gestionar las cookies a través de la configuración de tu navegador. Ten en cuenta
+          que deshabilitar ciertas cookies puede afectar la funcionalidad de ContraPunto.
+        </p>
+
+        <h3>Otras tecnologías</h3>
+        <p>
+          También utilizamos tecnologías similares como web beacons, píxeles de seguimiento y almacenamiento
+          local para mejorar tu experiencia y analizar el uso de nuestro servicio.
+        </p>
+      </div>
+    </section>
+
+    <section id="cambios" class="content-section">
+      <h2 class="section-title">
+        <svg class="section-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <path
+            d="M21.5 2l-2 2L12 11.5 4.5 4 2.5 2 1 3.5 8.5 11 1 18.5 2.5 20 4.5 18 12 10.5 19.5 18 21.5 20 23 18.5 15.5 11 23 3.5z">
+          </path>
+        </svg>
+        8. Cambios en la política
+      </h2>
+      <div class="section-content">
+        <h3>Actualizaciones de la política</h3>
+        <p>
+          Podemos actualizar esta Política de Privacidad ocasionalmente para reflejar cambios en nuestras
+          prácticas, tecnología, requisitos legales u otros factores. Cuando realicemos cambios
+          significativos, te notificaremos de las siguientes maneras:
+        </p>
+
+        <ul>
+          <li>Enviando un aviso a la dirección de correo electrónico asociada con tu cuenta</li>
+          <li>Publicando un aviso prominente en nuestro sitio web</li>
+          <li>Actualizando la fecha de "última actualización" en la parte superior de esta política</li>
+        </ul>
+
+        <h3>Tu consentimiento continuado</h3>
+        <p>
+          Al continuar utilizando ContraPunto después de que los cambios entren en vigor, aceptas estar sujeto
+          a la política actualizada. Si no estás de acuerdo con los cambios, puedes cerrar tu cuenta y dejar
+          de utilizar nuestros servicios.
+        </p>
+
+        <h3>Historial de versiones</h3>
+        <p>
+          Mantenemos un registro de las versiones anteriores de esta política. Puedes solicitar acceso a
+          versiones anteriores contactándonos directamente.
+        </p>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <div class="contact-section">
+      <h2 class="contact-title">¿Tienes preguntas sobre privacidad?</h2>
+      <p class="contact-text">
+        Estamos aquí para ayudarte. Contacta con nuestro equipo de privacidad para cualquier consulta o
+        inquietud.
+      </p>
+      <div class="contact-info">
+        <div class="contact-item">
+          <svg class="contact-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+            <polyline points="22,6 12,13 2,6"></polyline>
+          </svg>
+          maurobeltrame12@gmail.com
+        </div>
+        <div class="contact-item">
+          <svg class="contact-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          Buenos Aires, Argentina
+        </div>
+        <div class="contact-item">
+          <svg class="contact-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path
+              d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
+            </path>
+          </svg>
+          +54 2281 557280
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p class="footer-text">
+      © 2024 ContraPunto. Todos los derechos reservados. |
+      <a href="#" style="color: white; text-decoration: none;" aria-label="Términos de Servicio">Términos de
+        Servicio</a> |
+      <a href="#cookies" style="color: white; text-decoration: none;" aria-label="Política de Cookies">Política de
+        Cookies</a>
+    </p>
+  </footer>
+
+  <!-- Scroll to Top Button -->
+  <button class="scroll-to-top" id="scrollToTop">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="12" y1="19" x2="12" y2="5"></line>
+      <polyline points="5 12 12 5 19 12"></polyline>
+    </svg>
+  </button>
+
+  <script>
+    // Smooth scrolling for table of contents links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Scroll to top functionality
+    const scrollToTopBtn = document.getElementById('scrollToTop');
+
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset > 300) {
+        scrollToTopBtn.classList.add('visible');
+      } else {
+        scrollToTopBtn.classList.remove('visible');
+      }
+    });
+
+    scrollToTopBtn.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+
+    // Highlight current section in table of contents
+    const sections = document.querySelectorAll('.content-section');
+    const tocLinks = document.querySelectorAll('.toc-link');
+
+    function highlightCurrentSection() {
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (window.pageYOffset >= sectionTop - 200) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      tocLinks.forEach(link => {
+        link.parentElement.classList.remove('active');
+        if (link.getAttribute('href') === '#' + current) {
+          link.parentElement.classList.add('active');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', highlightCurrentSection);
+
+    // Add active state styling
+    const style = document.createElement('style');
+    style.textContent = `
+            .toc-item.active {
+                background-color: var(--primary-light);
+                transform: translateX(4px);
+            }
+        `;
+    document.head.appendChild(style);
+  </script>
+  <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'958980e001e8deaa',t:'MTc1MTQxMDY1Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
+</body>
+
+</html>

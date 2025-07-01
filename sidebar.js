@@ -38,11 +38,14 @@ async function analyzeArticle() {
 		const pageInfo = await getPageInfo();
 		console.log('ContraPunto: pageInfo', pageInfo); // DEBUG
 		// Solo enviar la URL en el body
-		const res = await fetch('http://localhost:3001/news-analysis/single', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ url: pageInfo.url }),
-		});
+		const res = await fetch(
+			'https://generatenewsinsightsfunction-qu3phpsaea-uc.a.run.app/contra-punto/us-central1/generateNewsInsightsFunction',
+			{
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ url: pageInfo.url }),
+			}
+		);
 		console.log('ContraPunto: API status', res.status); // DEBUG
 		const data = await res.json();
 		console.log('ContraPunto: API response', data); // DEBUG

@@ -18,118 +18,9 @@ function getPageInfo() {
 				reject('Respuesta inválida del content script');
 				return;
 			}
-			const { html, url } = response;
+			const { url } = response;
 			console.log('ContraPunto: Page URL', url); // DEBUG
-			console.log('ContraPunto: Page HTML length', html.length); // DEBUG
-			const parser = new DOMParser();
-			const doc = parser.parseFromString(html, 'text/html');
-			console.log('ContraPunto: Parsed HTML document', doc); // DEBUG
-			const tagsToRemove = [
-				'script',
-				'style',
-				'img',
-				'iframe',
-				'nav',
-				'footer',
-				'header',
-				'form',
-				'aside',
-				'svg',
-				'noscript',
-				'canvas',
-				'video',
-				'audio',
-				'object',
-				'embed',
-				'link',
-				'button',
-				'input',
-				'select',
-				'option',
-				'textarea',
-				'figure',
-				'figcaption',
-				'picture',
-				'source',
-				'track',
-				'map',
-				'area',
-				'meta',
-				'base',
-				'colgroup',
-				'col',
-				'datalist',
-				'fieldset',
-				'legend',
-				'output',
-				'param',
-				'progress',
-				'template',
-				'time',
-				'details',
-				'summary',
-				'mark',
-				'menu',
-				'menuitem',
-				'meter',
-				'optgroup',
-				'rp',
-				'rt',
-				'ruby',
-				's',
-				'samp',
-				'slot',
-				'sub',
-				'sup',
-				'var',
-				'bdi',
-				'bdo',
-				'cite',
-				'code',
-				'data',
-				'dfn',
-				'kbd',
-				'q',
-				'u',
-				'abbr',
-				'acronym',
-				'applet',
-				'big',
-				'center',
-				'font',
-				'strike',
-				'tt',
-				'marquee',
-				'blink',
-				'frameset',
-				'frame',
-				'del',
-				'ins',
-				'basefont',
-				'isindex',
-				'plaintext',
-				'xmp',
-				'keygen',
-				'dialog',
-				'command',
-				'content',
-				'element',
-				'shadow',
-				'bgsound',
-				'noembed',
-				'noframes',
-				'rb',
-				'rtc',
-			];
-			tagsToRemove.forEach((tag) => {
-				doc.querySelectorAll(tag).forEach((el) => el.remove());
-			});
-			doc.querySelectorAll('*').forEach((el) => {
-				[...el.attributes].forEach((attr) => el.removeAttribute(attr));
-			});
-			const cleanHtml = doc.body ? doc.body.innerHTML : '';
-			console.log('ContraPunto: Cleaned HTML', cleanHtml); // DEBUG
-			resolve({ url, html: cleanHtml });
+			resolve({ url });
 		});
 	});
 }
@@ -146,10 +37,11 @@ async function analyzeArticle() {
 		// Obtener info de la página
 		const pageInfo = await getPageInfo();
 		console.log('ContraPunto: pageInfo', pageInfo); // DEBUG
+		// Solo enviar la URL en el body
 		const res = await fetch('http://localhost:3001/news-analysis/single', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(pageInfo),
+			body: JSON.stringify({ url: pageInfo.url }),
 		});
 		console.log('ContraPunto: API status', res.status); // DEBUG
 		const data = await res.json();
@@ -187,16 +79,18 @@ function renderAnalysis(data) {
 		writingStyle = '',
 		factCheck = '',
 		glossary = [],
-		dataAnalysis = {},
+		dataAnalysis = null,
 		politicalBiasScore = 0,
 		factualityScore = 0,
 		sensationalismScore = 0,
+		personEntities = [],
 	} = data || {};
 
 	// Bias label y escala
 	let biasLabel = 'Desconocido';
 	let biasText = '';
 	let bias = 50;
+	let biasConfidence = null;
 	if (typeof politicalBiasScore === 'number') {
 		// -1 (izquierda) a 1 (derecha)
 		bias = Math.round(((politicalBiasScore + 1) / 2) * 100);
@@ -204,7 +98,12 @@ function renderAnalysis(data) {
 		else if (politicalBiasScore > 0.33) biasLabel = 'Derecha';
 		else biasLabel = 'Centro';
 		biasText = biasAnalysis.explanation || '';
+		biasConfidence = biasAnalysis.confidence;
 	}
+
+	// Actor favorecido y confianza
+	let favoredActor = actorAnalysis.favoredActor || '';
+	let actorConfidence = actorAnalysis.confidence;
 
 	// Data analysis
 	let chartHtml = '';
@@ -281,148 +180,193 @@ function renderAnalysis(data) {
 	}
 
 	content.innerHTML = `
-        <div class="tab-container">
-            <div class="tab-header">
-                <div class="tab active" data-tab="resumen">Resumen</div>
-                <div class="tab" data-tab="analisis">Análisis</div>
-                ${showDataTab ? '<div class="tab" data-tab="datos">Datos</div>' : ''}
-                <div class="tab" data-tab="contexto">Contexto</div>
-            </div>
-            <div id="tab-resumen" class="tab-content active">
-                <div class="card">
-                    <div class="section-title">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="section-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
-                        Resumen IA
-                    </div>
-                    <p style="line-height: 1.5; color: #333; font-size: 14px;">${neutralSummary}</p>
-                    <br>
-                    <p style="line-height: 1.5; color: #666; font-size: 14px;">${writingStyle}</p>
-                </div>
-                <div class="card">
-                    <div class="section-title">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="section-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h6"></path><path d="M22 12h-6"></path><path d="M12 2v2"></path><path d="M12 8v2"></path><path d="M12 14v2"></path><path d="M12 20v2"></path><circle cx="12" cy="12" r="10"></circle></svg>
-                        Análisis de sesgo
-                    </div>
-                    <div class="bias-scale-container">
-                        <div class="bias-scale">
-                            <div class="bias-marker" style="left: ${bias}%;"></div>
-                        </div>
-                        <div class="bias-labels">
-                            <span class="bias-label">Izquierda</span>
-                            <span class="bias-label">Centro</span>
-                            <span class="bias-label">Derecha</span>
-                        </div>
-                    </div>
-                    <p style="font-size: 13px;">${biasText}</p>
-                </div>
-                <div class="card">
-                    <div class="section-title toggle-section" data-target="keywords-content">
-                        <div style="display: flex; align-items: center;">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="section-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
-                            Palabras clave
-                        </div>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="toggle-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                    </div>
-                    <div id="keywords-content" class="collapsible-content open">
-                        <div class="keywords">
-                            ${keywords
-								.map((k) => `<span class="keyword-tag">#${k}</span>`)
-								.join('')}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div id="tab-analisis" class="tab-content">
-                <div class="card">
-                    <div class="section-title">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="section-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h6"></path><path d="M22 12h-6"></path><path d="M12 2v2"></path><path d="M12 8v2"></path><path d="M12 14v2"></path><path d="M12 20v2"></path><circle cx="12" cy="12" r="10"></circle></svg>
-                        Análisis detallado
-                    </div>
-                    <p style="font-size: 13px; margin-bottom: 12px;">${
-						actorAnalysis.explanation || ''
+		<div class="tab-container">
+			<div class="tab-header">
+				<div class="tab active" data-tab="resumen">Resumen</div>
+				<div class="tab" data-tab="analisis">Análisis</div>
+				${showDataTab ? '<div class="tab" data-tab="datos">Datos</div>' : ''}
+				<div class="tab" data-tab="contexto">Contexto</div>
+			</div>
+			<div id="tab-resumen" class="tab-content active">
+				<div class="card">
+					<div class="section-title">
+						<svg xmlns="http://www.w3.org/2000/svg" class="section-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+						Resumen IA
+					</div>
+					<p style="line-height: 1.5; color: #333; font-size: 14px;">${neutralSummary}</p>
+					<br>
+					<p style="line-height: 1.5; color: #666; font-size: 14px;">Estilo de redacción: ${
+						writingStyle || 'No disponible'
 					}</p>
-                    <div class="stat-grid">
-                        <div class="stat-card">
-                            <div class="stat-value">${Math.round(politicalBiasScore * 100)}%</div>
-                            <div class="stat-label">Sesgo político</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">${Math.round(factualityScore * 100)}%</div>
-                            <div class="stat-label">Factualidad</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">${Math.round(sensationalismScore * 100)}%</div>
-                            <div class="stat-label">Sensacionalismo</div>
-                        </div>
-                    </div>
-                </div>
-                ${
+				</div>
+				<div class="card">
+					<div class="section-title">
+						<svg xmlns="http://www.w3.org/2000/svg" class="section-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h6"></path><path d="M22 12h-6"></path><path d="M12 2v2"></path><path d="M12 8v2"></path><path d="M12 14v2"></path><path d="M12 20v2"></path><circle cx="12" cy="12" r="10"></circle></svg>
+						Análisis de sesgo
+					</div>
+					<div class="bias-scale-container">
+						<div class="bias-scale">
+							<div class="bias-marker" style="left: ${bias}%;"></div>
+						</div>
+						<div class="bias-labels">
+							<span class="bias-label">Izquierda</span>
+							<span class="bias-label">Centro</span>
+							<span class="bias-label">Derecha</span>
+						</div>
+					</div>
+					<p style="font-size: 13px;">${biasText}</p>
+					${
+						typeof biasConfidence === 'number'
+							? `<p style='font-size:12px;color:#888;'>Confianza del análisis: ${(
+									biasConfidence * 100
+							  ).toFixed(0)}%</p>`
+							: ''
+					}
+				</div>
+				<div class="card">
+					<div class="section-title toggle-section" data-target="keywords-content">
+						<div style="display: flex; align-items: center;">
+							<svg xmlns="http://www.w3.org/2000/svg" class="section-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+							Palabras clave
+						</div>
+						<svg xmlns="http://www.w3.org/2000/svg" class="toggle-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+					</div>
+					<div id="keywords-content" class="collapsible-content open">
+						<div class="keywords">
+							${keywords.map((k) => `<span class="keyword-tag">#${k}</span>`).join('')}
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="tab-analisis" class="tab-content">
+				<div class="card">
+					<div class="section-title">
+						<svg xmlns="http://www.w3.org/2000/svg" class="section-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h6"></path><path d="M22 12h-6"></path><path d="M12 2v2"></path><path d="M12 8v2"></path><path d="M12 14v2"></path><path d="M12 20v2"></path><circle cx="12" cy="12" r="10"></circle></svg>
+						Análisis detallado
+					</div>
+					<p style="font-size: 13px; margin-bottom: 12px;">${actorAnalysis.explanation || ''}</p>
+					${
+						favoredActor
+							? `<p style='font-size:13px;color:#444;'>Actor favorecido: <b>${favoredActor}</b></p>`
+							: ''
+					}
+					<div class="stat-grid">
+						<div class="stat-card">
+							<div class="stat-value" data-tooltip="Indica la inclinación política del artículo. 0% es neutral, 100% es altamente sesgado.">${Math.round(
+								politicalBiasScore * 100
+							)}%</div>
+							<div class="stat-label" data-tooltip="Indica la inclinación política del artículo. 0% es neutral, 100% es altamente sesgado.">Sesgo político</div>
+						</div>
+						<div class="stat-card">
+							<div class="stat-value" data-tooltip="Indica el nivel de confianza del modelo en el análisis realizado. 100% significa máxima certeza en la evaluación.">
+								${typeof actorConfidence === 'number' ? Math.round(actorConfidence * 100) : 'N/A'}%
+							</div>
+							<div class="stat-label" data-tooltip="Indica el nivel de confianza del modelo en el análisis realizado. 100% significa máxima certeza en la evaluación.">Confianza</div>
+						</div>
+						<div class="stat-card">
+							<div class="stat-value" data-tooltip="Evalúa el grado de exageración o dramatismo en el artículo. 0% es nada sensacionalista, 100% es muy sensacionalista.">${Math.round(
+								sensationalismScore * 100
+							)}%</div>
+							<div class="stat-label" data-tooltip="Evalúa el grado de exageración o dramatismo en el artículo. 0% es nada sensacionalista, 100% es muy sensacionalista.">Sensacionalismo</div>
+						</div>
+					</div>
+				</div>
+				${
 					entities && entities.length > 0
 						? `
-                <div class="card">
-                    <div class="section-title">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="section-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"></path></svg>
-                        Entidades relevantes
-                    </div>
-                    <div class="entities-list">
-                        ${entities
+				<div class="card">
+					<div class="section-title">
+						<svg xmlns="http://www.w3.org/2000/svg" class="section-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"></path></svg>
+						Entidades relevantes
+					</div>
+					<div class="entities-list">
+						${entities
 							.map(
-								(e) => `
-                            <div class="entity-item">
-                                <span class="entity-value">${e}</span>
-                            </div>
-                        `
+								(e) =>
+									`<div class="entity-item"><span class="entity-value">${e}</span></div>`
 							)
 							.join('')}
-                    </div>
-                </div>
-                `
+					</div>
+				</div>
+				`
 						: ''
 				}
-                <div class="card">
-                    <div class="section-title toggle-section" data-target="glossary-content">
-                        <div style="display: flex; align-items: center;">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="section-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-                            Glosario
-                        </div>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="toggle-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                    </div>
-                    <div id="glossary-content" class="collapsible-content">
-                        <div class="glossary-list">
-                            ${glossary
+				<div class="card">
+					<div class="section-title toggle-section" data-target="glossary-content">
+						<div style="display: flex; align-items: center;">
+							<svg xmlns="http://www.w3.org/2000/svg" class="section-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+							Glosario
+						</div>
+						<svg xmlns="http://www.w3.org/2000/svg" class="toggle-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+					</div>
+					<div id="glossary-content" class="collapsible-content">
+						<div class="glossary-list">
+							${glossary
 								.map(
 									(item) =>
 										`<div class="glossary-item"><div class="glossary-term">${item.term}</div><div class="glossary-definition">${item.definition}</div></div>`
 								)
 								.join('')}
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="section-title">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="section-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
-                        Chequeo de hechos
-                    </div>
-                    <p style="font-size: 13px;">${factCheck}</p>
-                </div>
-            </div>
-            ${
+						</div>
+					</div>
+				</div>
+				<div class="card">
+					<div class="section-title" style="display:flex;align-items:center;gap:6px;">
+						<svg xmlns="http://www.w3.org/2000/svg" class="section-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+						Chequeo de hechos
+						<span style="display:inline-flex;align-items:center;cursor:pointer;" data-tooltip="Aquí se informa si el artículo contiene errores fácticos, datos dudosos o afirmaciones no verificadas. Si no se detectan problemas, el artículo es considerado factual.">
+							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2196F3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x="12" y="16" x2="12" y2="12"/><line x="12" y="8" x2="12.01" y2="8"/></svg>
+						</span>
+					</div>
+					<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+						<div style="font-size:15px;font-weight:600;color:#2196F3;" data-tooltip="Mide cuán precisos y verificables son los hechos presentados. 100% es completamente factual.">
+							${Math.round(factualityScore * 100)}% factualidad
+						</div>
+					</div>
+					<p style="font-size: 13px;">${factCheck}</p>
+				</div>
+			</div>
+			${
 				showDataTab
 					? `<div id="tab-datos" class="tab-content" style="height:80vh"><div class="card" style="max-width:100%; height:100%"><div class="section-title"><svg xmlns="http://www.w3.org/2000/svg" class="section-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg> Análisis de datos</div>${chartHtml}</div></div>`
 					: ''
 			}
-            <div id="tab-contexto" class="tab-content">
-                <div class="card">
-                    <div class="section-title">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="section-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                        Contexto adicional
-                    </div>
-                    <p>${contextInfo}</p>
+			<div id="tab-contexto" class="tab-content">
+				<div class="card">
+					<div class="section-title">
+						<svg xmlns="http://www.w3.org/2000/svg" class="section-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+						Contexto adicional
+					</div>
+					<p>${contextInfo}</p>
+				</div>
+				<!-- Tarjeta de personas relevantes -->
+				${
+					Array.isArray(personEntities) && personEntities.length > 0
+						? `
+				<div class="card">
+					<div class="section-title">
+						<svg xmlns="http://www.w3.org/2000/svg" class="section-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"></path></svg>
+						Personas relevantes
+					</div>
+					<div class="entities-list">
+						${personEntities
+							.map(
+								(p) => `
+                <div class="entity-item">
+                    <span class="entity-value" style="font-weight:600;">${p.nombre}</span>
+                    <span class="entity-desc" style="color:#666;font-size:13px;">${p.descripcion}</span>
                 </div>
-            </div>
-        </div>
-    `;
+            `
+							)
+							.join('')}
+					</div>
+				</div>
+				`
+						: ''
+				}
+			</div>
+		</div>
+	`;
 
 	// Reaplicar listeners de tabs, collapsibles, keywords y botones de acción
 	setTimeout(() => {
@@ -465,6 +409,7 @@ function renderAnalysis(data) {
 		document.getElementById('feedback-btn')?.addEventListener('click', () => {
 			alert('Enviando feedback sobre este análisis');
 		});
+		enableCustomTooltips();
 	}, 0);
 }
 
@@ -485,9 +430,73 @@ if (settingsBtn) {
 	});
 }
 
+// Mejora de tooltips: se muestran como popover personalizados al hacer hover
+function enableCustomTooltips() {
+	const tooltipElements = document.querySelectorAll('[data-tooltip]');
+	tooltipElements.forEach((el) => {
+		let tooltipDiv;
+		el.addEventListener('mouseenter', function (e) {
+			tooltipDiv = document.createElement('div');
+			tooltipDiv.textContent = el.getAttribute('data-tooltip');
+			tooltipDiv.style.position = 'fixed';
+			tooltipDiv.style.background = '#222';
+			tooltipDiv.style.color = '#fff';
+			tooltipDiv.style.padding = '6px 10px';
+			tooltipDiv.style.borderRadius = '6px';
+			tooltipDiv.style.fontSize = '13px';
+			tooltipDiv.style.zIndex = 9999;
+			tooltipDiv.style.pointerEvents = 'none';
+			document.body.appendChild(tooltipDiv);
+			const rect = el.getBoundingClientRect();
+			tooltipDiv.style.top = rect.top - tooltipDiv.offsetHeight - 8 + 'px';
+			tooltipDiv.style.left = rect.left + rect.width / 2 - tooltipDiv.offsetWidth / 2 + 'px';
+
+			// Ajuste para tooltips: si el sidebar es un iframe, mover el tooltip al iframe o ajustar posición
+			const sidebarIframe = document.getElementById('contrapunto-sidebar-iframe');
+			if (sidebarIframe) {
+				// Si estamos en el contexto del iframe, no hacer nada especial
+				// Si estamos en el contexto de la página principal, mover el tooltip al iframe
+				// Pero como el script corre dentro del iframe, solo aseguramos z-index alto y posición fixed
+				tooltipDiv.style.zIndex = 2147483647;
+			}
+			// Mejorar posición: si el tooltip se sale por la derecha o izquierda, ajustarlo
+			const vw = window.innerWidth;
+			const rectTooltip = tooltipDiv.getBoundingClientRect();
+			if (rectTooltip.left < 0) {
+				tooltipDiv.style.left = '8px';
+			}
+			if (rectTooltip.right > vw) {
+				tooltipDiv.style.left = vw - rectTooltip.width - 8 + 'px';
+			}
+		});
+		el.addEventListener('mouseleave', function () {
+			if (tooltipDiv) tooltipDiv.remove();
+		});
+	});
+}
+
 // Recibe mensajes del content script
 window.addEventListener('message', (event) => {
 	if (event.data && event.data.type === 'CONTRAPUNTO_ANALYZE') {
 		analyzeArticle();
+	}
+});
+
+// Lógica para agrandar/reducir el sidebar (migrada desde sidebar.html por CSP)
+document.addEventListener('DOMContentLoaded', function () {
+	const resizeBtn = document.getElementById('resize-btn');
+	const sidebarContainer = document.querySelector('.sidebar-container');
+	let expanded = false;
+	if (resizeBtn && sidebarContainer) {
+		resizeBtn.addEventListener('click', function () {
+			expanded = !expanded;
+			if (expanded) {
+				sidebarContainer.style.width = '500px';
+				resizeBtn.querySelector('#resize-btn-label').textContent = 'Reducir';
+			} else {
+				sidebarContainer.style.width = '';
+				resizeBtn.querySelector('#resize-btn-label').textContent = 'Agrandar';
+			}
+		});
 	}
 });

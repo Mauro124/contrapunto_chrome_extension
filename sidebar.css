@@ -9,7 +9,7 @@ body {
 	background-color: var(--background);
 	color: var(--text-primary);
 	line-height: 1.6;
-	width: 360px;
+	width: 400px;
 	height: 100vh;
 	overflow-y: auto;
 	border-left: 1px solid #e2e8f0;

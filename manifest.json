@@ -4,10 +4,10 @@
 	"description": "Sidebar inteligente para analizar y extraer información de la web.",
 	"version": "1.0.0",
 	"icons": {
-		"16": "assets/icons/icon.png",
-		"32": "assets/icons/icon.png",
-		"48": "assets/icons/icon.png",
-		"128": "assets/icons/icon.png"
+		"16": "assets/icons/icon_background.png",
+		"32": "assets/icons/icon_background.png",
+		"48": "assets/icons/icon_background.png",
+		"128": "assets/icons/icon_background.png"
 	},
 	"background": {
 		"service_worker": "background.js"
@@ -24,8 +24,8 @@
 	"action": {
 		"default_title": "Abrir ContraPunto Sidebar",
 		"default_icon": {
-			"16": "assets/icons/icon.png",
-			"32": "assets/icons/icon.png"
+			"16": "assets/icons/icon_background.png",
+			"32": "assets/icons/icon_background.png"
 		}
 	},
 	"web_accessible_resources": [
